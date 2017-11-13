@@ -1,0 +1,10 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- .
+extra-deps:
+- binary-strict-0.4.8.3
+- HDBC-sqlite3-2.3.3.1
+- filepath-1.4.1.1
+- zip-archive-0.3.1.1
+resolver: lts-9.12

@@ -5,6 +5,7 @@ module DBase
   , ColumnDef(..)
   , DataType
   , parseDBaseTable
+  , genDropTableSQL
   , genCreateTableSQL
   , genInsertSQL
   , genAllValues
@@ -187,6 +188,11 @@ genCreateColumnSQL col =
        Numeric -> "INT"
        FloatingPoint -> "REAL"
        _ -> ""
+
+genDropTableSQL :: Table -> String
+genDropTableSQL table =
+  "DROP TABLE IF EXISTS "
+  ++ tableName table
 
 genCreateTableSQL :: Table -> String
 genCreateTableSQL table =

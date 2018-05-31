@@ -20,7 +20,7 @@ extractZips [] = return ()
 extractZips (zipPath:remainingZipPaths) = do
   rawArchive <- BL.readFile zipPath
   putStrLn $ "Processing " ++ zipPath
-  exportTables (filter (LIST.isSuffixOf "dbf" . (map CHAR.toLower) . ZIP.eRelativePath) (ZIP.zEntries $ ZIP.toArchive rawArchive)) $ toTableName zipPath ++ ".sqlite"
+  exportTables (filter (LIST.isSuffixOf "dbf" . (map CHAR.toLower) . ZIP.eRelativePath) (ZIP.zEntries $ ZIP.toArchive rawArchive)) $ toTableName "" zipPath ++ ".sqlite"
   extractZips remainingZipPaths
 
 
@@ -31,13 +31,13 @@ exportTables (dbaseEntry:otherPaths) sqliteFilePath = do
   exportTables otherPaths sqliteFilePath
 
 
-toTableName :: FilePath -> String
-toTableName fp = takeWhile (/='.') $ takeBaseName fp
+toTableName :: String -> FilePath -> String
+toTableName quote fp = quote ++ (takeWhile (/='.') $ takeBaseName fp) ++ quote
 
 readTableAndAddToDb :: ZIP.Entry -> FilePath -> IO ()
 readTableAndAddToDb dbaseEntry sqliteFilePath = do
   let dbaseData = ZIP.fromEntry dbaseEntry
-      table = parseDBaseTable dbaseData (toTableName $ ZIP.eRelativePath dbaseEntry)
+      table = parseDBaseTable dbaseData (toTableName "'" $ ZIP.eRelativePath dbaseEntry)
     in addTableToDB table sqliteFilePath
 
 addTableToDB :: Table -> FilePath -> IO ()
